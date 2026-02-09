@@ -1,0 +1,70 @@
+<html>
+<body>
+    <div style="max-width: 800px; margin: 20px auto; font-family: Arial, sans-serif;">
+        <h1>Chat with Kimi K2.5</h1>
+        <div id="chat-history" style="height: 400px; border: 1px solid #ddd; padding: 10px; overflow-y: scroll; margin-bottom: 10px;"></div>
+        <input type="text" id="user-input" style="width: 70%; padding: 10px;" placeholder="Type your message here..." />
+        <button id="send-button" style="width: 25%; padding: 10px;">Send</button>
+    </div>
+
+    <script src="https://js.puter.com/v2/"></script>
+    <script>
+        const chatHistory = document.getElementById('chat-history');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+
+        function addMessage(sender, message, isStreaming = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.style.marginBottom = '10px';
+            messageDiv.innerHTML = `<strong>${sender}:</strong> <span class="message-content">${message}</span>`;
+            if (sender === 'You') {
+                messageDiv.style.color = '#0066cc';
+            } else {
+                messageDiv.style.color = '#006600';
+            }
+            chatHistory.appendChild(messageDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            
+            if (isStreaming) {
+                return messageDiv.querySelector('.message-content');
+            }
+        }
+
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            addMessage('You', message);
+            userInput.value = '';
+            sendButton.disabled = true;
+
+            const responseSpan = addMessage('Kimi K2.5', '', true);
+
+            try {
+                const response = await puter.ai.chat(message, {
+                    model: 'moonshotai/kimi-k2.5',
+                    stream: true
+                });
+
+                for await (const part of response) {
+                    if (part?.text) {
+                        responseSpan.innerHTML += part.text;
+                        chatHistory.scrollTop = chatHistory.scrollHeight;
+                    }
+                }
+            } catch (error) {
+                responseSpan.innerHTML = `Error: ${error.message}`;
+            }
+
+            sendButton.disabled = false;
+        }
+
+        sendButton.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
