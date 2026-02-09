@@ -2,36 +2,79 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Lovable-Lite (Claude 4.5)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Lovable-Lite (Puter + Claude)</title>
   <link rel="stylesheet" href="style.css" />
 
   <!-- Puter -->
   <script src="https://js.puter.com/v2/"></script>
 
-  <!-- Monaco Editor -->
+  <!-- Monaco (VS Code editor) -->
   <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
 </head>
 <body>
 
-<header>
-  <h2>⚡ Lovable-Lite</h2>
-  <button id="loginBtn">Login</button>
-</header>
-
-<div id="container">
-  <!-- Chat -->
-  <div id="chat">
-    <div id="messages"></div>
-    <textarea id="prompt" placeholder="Ask Claude to build or edit your app..."></textarea>
-    <button id="send">Send</button>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">⚡</div>
+    <div>
+      <div class="title">Lovable-Lite</div>
+      <div class="sub">Puter + Claude Sonnet (via login)</div>
+    </div>
   </div>
 
-  <!-- Editor -->
-  <div id="editor"></div>
+  <div class="topbar-actions">
+    <span class="pill" id="statusPill">Not logged in</span>
+    <button class="btn" id="loginBtn">Login</button>
+  </div>
+</header>
 
-  <!-- Preview -->
-  <iframe id="preview"></iframe>
-</div>
+<main class="layout">
+  <!-- Left: Chat -->
+  <section class="chat">
+    <div class="chat-head">
+      <div class="chat-title">Chat</div>
+      <div class="chat-hint">Ask to build/edit. It updates files + preview.</div>
+    </div>
+
+    <div id="messages" class="messages"></div>
+
+    <div class="composer">
+      <textarea id="prompt" placeholder="e.g. Make a clean landing page with a navbar and CTA…"></textarea>
+      <button class="btn primary" id="send">Send</button>
+    </div>
+  </section>
+
+  <!-- Right: Work area (Editor/Preview tabs) -->
+  <section class="work">
+    <div class="work-top">
+      <div class="segmented" role="tablist" aria-label="Work tabs">
+        <button class="seg active" id="tabEditor" role="tab" aria-selected="true">Editor</button>
+        <button class="seg" id="tabPreview" role="tab" aria-selected="false">Preview</button>
+      </div>
+
+      <div class="filetabs">
+        <button class="filetab active" data-file="index.html">index.html</button>
+        <button class="filetab" data-file="style.css">style.css</button>
+        <button class="filetab" data-file="app.js">app.js</button>
+      </div>
+
+      <div class="work-actions">
+        <button class="btn ghost" id="runBtn" title="Update preview (Ctrl+Enter)">Run</button>
+      </div>
+    </div>
+
+    <div class="work-body">
+      <div id="editorWrap" class="panel show">
+        <div id="editor" class="editor"></div>
+      </div>
+
+      <div id="previewWrap" class="panel">
+        <iframe id="preview" class="preview" sandbox="allow-scripts allow-forms allow-modals allow-popups allow-same-origin"></iframe>
+      </div>
+    </div>
+  </section>
+</main>
 
 <script src="app.js"></script>
 </body>
